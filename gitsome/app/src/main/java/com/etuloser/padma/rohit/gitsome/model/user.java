@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by Rohit on 12/29/2017.
  */
 
-public class user  {
+public class user implements Serializable {
 
     String avatar_url;
     String name;
@@ -19,11 +19,14 @@ public class user  {
     String email;
     String public_repos;
     String created_at;
+    String documentation_url;
+    String message;
+
 
     @Override
     public String toString() {
         return "user{" +
-                "avatar_url='" + avatar_url + '\'' +
+                "avatar_url='" + avatar_url+ '\'' +
                 ", name='" + name + '\'' +
                 ", login='" + login + '\'' +
                 ", url='" + url + '\'' +
@@ -34,8 +37,27 @@ public class user  {
                 ", email='" + email + '\'' +
                 ", public_repos='" + public_repos + '\'' +
                 ", created_at='" + created_at + '\'' +
+                ", documentation_url='" + documentation_url + '\'' +
+                ", message='" + message + '\'' +
                 '}';
     }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getDocumentation_url() {
+        return documentation_url;
+    }
+
+    public void setDocumentation_url(String documentation_url) {
+        this.documentation_url = documentation_url;
+    }
+
 
     public String getAvatar_url() {
         return avatar_url;

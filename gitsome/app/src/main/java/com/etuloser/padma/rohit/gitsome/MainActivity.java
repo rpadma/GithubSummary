@@ -19,6 +19,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import com.etuloser.padma.rohit.gitsome.model.user;
+import com.google.gson.Gson;
+
 public class MainActivity extends AppCompatActivity {
 
     Button btnsearch;
@@ -47,14 +49,30 @@ public class MainActivity extends AppCompatActivity {
              @Override
              public void onResponse(Call<user> call, Response<user> response) {
 
+                 if(response.code()==200)
+                 {
 
-                 Log.d("###trip","demo");
-                 Log.d("###trip code",response.message());
-                 Log.d("###trip code",String.valueOf(response.code()));
-                 Log.d("###trip code",response.message());
-                 Log.d("###trip code",response.message());
 
-                 Log.d("###trip",response.body().toString());
+                     user u=new user();
+                     u.setAvatar_url(response.body().getAvatar_url());
+                     u.setRepos_url(response.body().getRepos_url());
+                     u.setCreated_at(response.body().getCreated_at());
+                     u.setEmail(response.body().getEmail());
+                     u.setFollowers(response.body().getFollowers());
+                     u.setFollowing(response.body().getFollowing());
+                     u.setLocation(response.body().getLocation());
+                     u.setLogin(response.body().getLogin());
+                     u.setUrl(response.body().getUrl());
+                     u.setPublic_repos(response.body().getPublic_repos());
+                     u.setName(response.body().getName());
+
+                     Senduser(u);
+                 }
+                 else
+                 {
+                     Toast.makeText(getApplicationContext(),"No User exist",Toast.LENGTH_SHORT).show();
+                 }
+
 
 
              }
@@ -79,7 +97,8 @@ public class MainActivity extends AppCompatActivity {
 
         Intent i=new Intent(this,ProfileActivity.class);
         Bundle b=new Bundle();
-      //  b.putSerializable("gituser",gituser);
+        b.putSerializable("gituser",gituser);
+        i.putExtras(b);
         startActivity(i);
     }
 }
