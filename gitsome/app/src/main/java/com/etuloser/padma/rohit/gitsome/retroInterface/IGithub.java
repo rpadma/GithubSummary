@@ -4,6 +4,7 @@ import com.etuloser.padma.rohit.gitsome.model.user;
 
 import java.util.List;
 
+import io.reactivex.Observable;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -14,6 +15,10 @@ import retrofit2.http.Path;
 
 public interface IGithub {
 
-    @GET("users/{user}")
-    Call<user> getUser(@Path("user") String user);
+
+    @GET("/users/{user}")
+    Observable<user> getOUser(@Path("user") String user);
+
+   // @GET("users/{user}")
+   // user getUser(@Path("user") String user);
 }

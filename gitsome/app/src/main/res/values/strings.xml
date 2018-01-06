@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">gitsome</string>
+    <string name="githubToken">d65b6d9f999472fbe3634b1c6ed69628837854cc</string>
 </resources>

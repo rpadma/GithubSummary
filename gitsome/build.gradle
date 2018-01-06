@@ -21,8 +21,13 @@ allprojects {
         jcenter()
         maven { url "https://jitpack.io" }
     }
+    ext {
+        okhttpVersion = "3.0.1"
+    }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+
