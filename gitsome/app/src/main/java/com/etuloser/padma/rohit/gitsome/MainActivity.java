@@ -13,15 +13,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.etuloser.padma.rohit.gitsome.model.userandrepo;
+import com.etuloser.padma.rohit.gitsome.model.userdata;
 import com.etuloser.padma.rohit.gitsome.retroInterface.IGithub;
 import com.etuloser.padma.rohit.gitsome.service.GithubService;
 import com.etuloser.padma.rohit.gitsome.util.constants;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
 import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.BiFunction;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
@@ -32,6 +38,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import com.etuloser.padma.rohit.gitsome.model.user;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.edxusername)
     EditText edxusername;
 
+    user u;
+    ArrayList<userdata> userdataArrayList=new ArrayList<>();
   private IGithub githubService;
   private CompositeDisposable _disposables;
 
@@ -61,7 +77,65 @@ public class MainActivity extends AppCompatActivity {
      if(!user1.isEmpty())
      {
 
-             _disposables.add(
+         Observable<user> userObservable = githubService.getOUser(user1)
+                 .subscribeOn(Schedulers.newThread())
+                 .observeOn(AndroidSchedulers.mainThread());
+
+         Observable<ArrayList<userdata>> repoObservable = githubService.getOUserData(user1)
+                 .subscribeOn(Schedulers.newThread())
+                 .observeOn(AndroidSchedulers.mainThread());
+
+/*
+         @Override
+         public userandrepo call(user u, ArrayList<userdata> ud) {
+
+         userandrepo urobject=new userandrepo();
+         urobject.setU(u);
+         urobject.setRepo(ud);
+         return urobject;
+     }
+*/
+         Observable<userandrepo> combined = Observable.zip(userObservable, repoObservable, new BiFunction<user, ArrayList<userdata>, userandrepo>() {
+             @Override
+             public userandrepo apply(user u, ArrayList<userdata> userdata) throws Exception {
+
+
+                 Log.d("user",u.toString());
+                 userandrepo urobject=new userandrepo();
+                 urobject.setU(u);
+                 urobject.setRepo(userdata);
+                 return urobject;
+
+             }
+         });
+
+         combined.subscribe(new Observer<userandrepo>() {
+                                @Override
+                                public void onSubscribe(Disposable d) {
+
+                                }
+
+                                @Override
+                                public void onNext(userandrepo userandrepo) {
+
+                                    Senduser(userandrepo);
+                                    Log.d("user",userandrepo.getU().toString());
+                                    Log.d("repo count",String.valueOf(userandrepo.getRepo().size()));
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+
+                                }
+
+                                @Override
+                                public void onComplete() {
+
+                                }
+                            }
+         );
+
+         /*    _disposables.add(
                      githubService.getOUser(user1)
                              .subscribeOn(Schedulers.io())
                      .observeOn(AndroidSchedulers.mainThread())
@@ -77,7 +151,8 @@ public class MainActivity extends AppCompatActivity {
                              public void onNext(user user) {
 
                                Log.d("user",user.toString());
-                               Senduser(user);
+                             //  Senduser(user);
+                                 u=user;
 
                              }
 
@@ -87,19 +162,38 @@ public class MainActivity extends AppCompatActivity {
                            }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
                          }));
+
+
+             _disposables.add(githubService.getOUserData(user1)
+                               .subscribeOn(Schedulers.io())
+                               .observeOn(AndroidSchedulers.mainThread())
+                     .subscribeWith(new DisposableObserver<ArrayList<userdata>>(){
+
+
+                         @Override
+                         public void onNext(ArrayList<userdata> userdata) {
+
+                             userdataArrayList=userdata;
+
+                             Log.d("Repos count",String.valueOf(userdataArrayList.size()));
+                         }
+
+                         @Override
+                         public void onError(Throwable e) {
+
+                         }
+
+                         @Override
+                         public void onComplete() {
+
+                         }
+                     })
+
+
+             );
+
+*/
 
 
 
@@ -157,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
          });
 
          */
-         }
+     }
      else
      {
          Toast.makeText(this.getApplicationContext(),"Enter a username",Toast.LENGTH_SHORT).show();
@@ -167,7 +261,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void Senduser(user gituser)
+
+    private Observable<user> getuserdetails(String username) {
+        return  githubService.getOUser(username); //some network call
+    }
+
+
+    private Observable<ArrayList<userdata>> getrepo(String username) {
+        return githubService.getOUserData(username); //some network call based on response from ServiceA
+    }
+
+
+    public void Senduser(userandrepo gituser)
     {
 
         _disposables.dispose();
