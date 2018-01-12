@@ -8,10 +8,26 @@
     android:orientation="vertical"
     tools:context="com.etuloser.padma.rohit.gitsome.SplashActivity">
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="GITSOME"
+            android:fontFamily="monospace"
+            android:layout_marginTop="30pt"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="60sp"
+            />
+    </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
         >
@@ -19,12 +35,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="100px"
+            android:layout_margin="120px"
             android:src="@drawable/gicon"
             />
+    </LinearLayout>
 
 
 
     </LinearLayout>
-
-</LinearLayout>

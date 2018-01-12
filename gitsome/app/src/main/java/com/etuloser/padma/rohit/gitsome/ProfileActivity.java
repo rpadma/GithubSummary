@@ -41,6 +41,11 @@ public class ProfileActivity extends AppCompatActivity {
     @BindView(R.id.repolangchart)
     PieChart repochar;
 
+    @BindView(R.id.starlangchart)
+    PieChart starrepochar;
+
+    @BindView(R.id.projectstarchart)
+    PieChart projectstarchar;
 
     user u;
     userandrepo uar;
@@ -84,6 +89,9 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         HashMap<String,Integer> projectcount=new HashMap<>();
+        HashMap<String,Integer> starcount=new HashMap<>();
+        HashMap<String, Integer> projectstarcount=new HashMap<>();
+
         ArrayList<String> labels = new ArrayList<String>();
         ArrayList<PieEntry> entries1 = new ArrayList<>();
 
@@ -97,6 +105,25 @@ public class ProfileActivity extends AppCompatActivity {
             {
                 projectcount.put(u.getLanguage(),projectcount.get(u.getLanguage())+1);
             }
+
+            if(u.getStargazers_count()>0)
+            {
+                if(starcount.containsKey(u.getLanguage())) {
+                    starcount.put(u.getLanguage(), (starcount.get(u.getLanguage())+ u.getStargazers_count()));
+
+                }
+                else
+                {
+                    starcount.put(u.getLanguage(),u.getStargazers_count());
+                }
+            }
+
+            if(u.getStargazers_count()>0)
+            {
+                projectstarcount.put(u.getName(),u.getStargazers_count());
+            }
+
+
 
         }
 
@@ -120,7 +147,64 @@ public class ProfileActivity extends AppCompatActivity {
         repochar.setDescription(d);
 
 
+        bindstarrepo(starcount);
+        bindprojectstar(projectstarcount);
+    }
 
+
+    public void bindstarrepo(HashMap<String,Integer> starcount)
+    {
+
+        ArrayList<String> labels = new ArrayList<String>();
+        ArrayList<PieEntry> entries1 = new ArrayList<>();
+
+        for (String temp:starcount.keySet())
+        {
+
+            labels.add(temp);
+            entries1.add(new PieEntry(starcount.get(temp),temp));
+
+        }
+
+
+        PieDataSet dataset1 = new PieDataSet(entries1,"Star Count");
+
+        PieData pd=new PieData(dataset1);
+        starrepochar.setData(pd);
+
+        dataset1.setColors(ColorTemplate.MATERIAL_COLORS);
+        Description d=new Description();
+        d.setText("Stars per Language");
+        starrepochar.setDescription(d);
+
+
+    }
+
+
+    public void bindprojectstar(HashMap<String,Integer> projectstarcount)
+    {
+
+        ArrayList<String> labels = new ArrayList<String>();
+        ArrayList<PieEntry> entries1 = new ArrayList<>();
+
+        for (String temp:projectstarcount.keySet())
+        {
+
+            labels.add(temp);
+            entries1.add(new PieEntry(projectstarcount.get(temp),temp));
+
+        }
+
+
+        PieDataSet dataset1 = new PieDataSet(entries1,"Star per Repo Count");
+
+        PieData pd=new PieData(dataset1);
+        projectstarchar.setData(pd);
+
+        dataset1.setColors(ColorTemplate.COLORFUL_COLORS);
+        Description d=new Description();
+        d.setText("Stars per Repo");
+        projectstarchar.setDescription(d);
     }
 
 

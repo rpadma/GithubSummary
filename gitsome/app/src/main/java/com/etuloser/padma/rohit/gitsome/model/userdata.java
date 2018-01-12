@@ -12,6 +12,9 @@ public class userdata implements Serializable{
     String name;
     String created_at;
     String language;
+    int stargazers_count;
+
+
 
     public String getName() {
         return name;
@@ -36,4 +39,15 @@ public class userdata implements Serializable{
     public void setLanguage(String language) {
         this.language = language;
     }
+
+
+    public int getStargazers_count() {
+        return stargazers_count;
+    }
+
+    public void setStargazers_count(int stargazers_count) {
+        this.stargazers_count = stargazers_count;
+    }
+
+
 }
