@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.etuloser.padma.rohit.gitsome.model.commitmodel.commitdata;
 import com.etuloser.padma.rohit.gitsome.model.user;
 import com.etuloser.padma.rohit.gitsome.model.userandrepo;
+import com.etuloser.padma.rohit.gitsome.model.usercommits;
 import com.etuloser.padma.rohit.gitsome.model.userdata;
 import com.etuloser.padma.rohit.gitsome.retroInterface.IGithub;
 import com.etuloser.padma.rohit.gitsome.service.GithubService;
@@ -78,12 +79,16 @@ public class ProfileActivity extends AppCompatActivity {
     @BindView(R.id.projectstarchart)
     PieChart projectstarchar;
 
+    @BindView(R.id.repocommitchart)
+     PieChart repocommitchar;
+
     user u;
     userandrepo uar;
     private IGithub githubService;
     CompositeDisposable reposDisposable;
     ArrayList<String> repolist;
     HashMap<String,ArrayList<commitdata>> hcommitdata;
+    HashMap<String,Integer> repocommits;
     ArrayList<ArrayList<commitdata>> clist=new ArrayList<>();
 
     @Override
@@ -97,6 +102,7 @@ public class ProfileActivity extends AppCompatActivity {
         githubService = (IGithub) GithubService.createGithubService(githubToken);
         reposDisposable=new CompositeDisposable();
         hcommitdata=new HashMap<>();
+        repocommits=new HashMap<>();
 
         if (getIntent().getExtras() != null) {
             Bundle b = getIntent().getExtras();
@@ -143,8 +149,65 @@ public class ProfileActivity extends AppCompatActivity {
 
     public void getcontributors(ArrayList<String> repolist)
     {
+                       reposDisposable.add( Observable.fromIterable(repolist)
+                                .flatMap(new Function<String, ObservableSource<Pair<String,ArrayList<usercommits>>>>() {
+                                                                   @Override
+                                                                   public ObservableSource<Pair<String,ArrayList<usercommits>>> apply(String s) throws Exception {
+
+                                                                       return Observable.zip(
+                                                                               Observable.just(s),
+                                                                               githubService.getcontributors(u.getLogin(), s), new BiFunction<String, ArrayList<usercommits>, Pair<String, ArrayList<usercommits>>>() {
+                                                                                   @Override
+                                                                                   public Pair<String, ArrayList<usercommits>> apply(String s, ArrayList<usercommits> usercommits) throws Exception {
+                                                                                       return new Pair<String,ArrayList<usercommits>>(s, usercommits);
+                                                                                   }
+                                                                               }
+
+                                                                       );
+                                                                   }
+                                                               }
+
+
+                           ).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
+         .subscribeWith(new DisposableObserver<Pair<String, ArrayList<usercommits>>>() {
+
+
+             @Override
+             public void onNext(Pair<String, ArrayList<usercommits>> stringArrayListPair) {
+
+
+                 for(usercommits u:stringArrayListPair.second)
+                 {
+                     if(u.getLogin().equals(u.getLogin()))
+                     {
+                         repocommits.put(stringArrayListPair.first,u.getContributions());
+                         break;
+                     }
+
+                 }
+             }
+
+
+             @Override
+             public void onError(Throwable e) {
+
+             }
+
+
+             @Override
+             public void onComplete() {
+
+                 bindrepocommit(repocommits);
+
+             }
+         })
+
+ );
+
 
     }
+
+
 
     public void getrepodata(ArrayList<String> repolist)
     {
@@ -224,11 +287,37 @@ public class ProfileActivity extends AppCompatActivity {
 
 
 
+  public void bindrepocommit(HashMap<String,Integer> repocommits)
+  {
+      ArrayList<String> labels = new ArrayList<String>();
+      ArrayList<PieEntry> entries1 = new ArrayList<>();
 
-    public void consolelog(int id)
-    {
-        Log.d("size", String.valueOf(id));
-    }
+      for (String temp:repocommits.keySet())
+      {
+
+          labels.add(temp);
+          entries1.add(new PieEntry(repocommits.get(temp),temp));
+
+      }
+
+      PieDataSet dataset1 = new PieDataSet(entries1,"Commits Count");
+
+      PieData pd=new PieData(dataset1);
+      repocommitchar.setData(pd);
+
+      dataset1.setColors(ColorTemplate.MATERIAL_COLORS);
+      Description d=new Description();
+      d.setText("Commits per repo");
+      repocommitchar.setDescription(d);
+
+
+
+
+
+
+
+  }
+
 
 
 

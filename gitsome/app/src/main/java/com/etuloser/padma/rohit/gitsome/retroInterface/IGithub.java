@@ -2,6 +2,7 @@ package com.etuloser.padma.rohit.gitsome.retroInterface;
 
 import com.etuloser.padma.rohit.gitsome.model.commitmodel.commitdata;
 import com.etuloser.padma.rohit.gitsome.model.user;
+import com.etuloser.padma.rohit.gitsome.model.usercommits;
 import com.etuloser.padma.rohit.gitsome.model.userdata;
 
 import org.eclipse.egit.github.core.Contributor;
@@ -33,9 +34,9 @@ public interface IGithub {
     Observable<ArrayList<commitdata>> getOcommitdata(@Path("user") String user,@Path("reponame") String reponame);
 
 
-    @GET("/repos/{owner}/{repo}/contributors")
-    Observable<List<Contributor>> contributors(
-            @Path("owner") String owner, @Path("repo") String repo);
+    @GET("/repos/{user}/{reponame}/contributors")
+    Observable<ArrayList<usercommits>> getcontributors(
+            @Path("user") String user, @Path("reponame") String reponame);
 
    // @GET("users/{user}")
    // user getUser(@Path("user") String user);
