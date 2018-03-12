@@ -176,11 +176,11 @@ public class ProfileActivity extends AppCompatActivity {
              public void onNext(Pair<String, ArrayList<usercommits>> stringArrayListPair) {
 
 
-                 for(usercommits u:stringArrayListPair.second)
+                 for(usercommits uc:stringArrayListPair.second)
                  {
-                     if(u.getLogin().equals(u.getLogin()))
+                     if(uc.getLogin().equals(u.getLogin()))
                      {
-                         repocommits.put(stringArrayListPair.first,u.getContributions());
+                         repocommits.put(stringArrayListPair.first,uc.getContributions());
                          break;
                      }
 
