@@ -87,7 +87,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="3pt"
             android:fontFamily="monospace"
-            android:text="joined"
+            android:text="Joined "
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
