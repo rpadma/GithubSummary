@@ -1,17 +1,13 @@
 package com.etuloser.padma.rohit.gitsome.retroInterface;
 
-import com.etuloser.padma.rohit.gitsome.model.commitmodel.commitdata;
-import com.etuloser.padma.rohit.gitsome.model.user;
-import com.etuloser.padma.rohit.gitsome.model.usercommits;
-import com.etuloser.padma.rohit.gitsome.model.userdata;
-
-import org.eclipse.egit.github.core.Contributor;
+import com.etuloser.padma.rohit.gitsome.model.User;
+import com.etuloser.padma.rohit.gitsome.model.commitmodel.CommitData;
+import com.etuloser.padma.rohit.gitsome.model.UserCommits;
+import com.etuloser.padma.rohit.gitsome.model.UserData;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import io.reactivex.Observable;
-import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 
@@ -22,22 +18,22 @@ import retrofit2.http.Path;
 public interface IGithub {
 
 
-    @GET("/users/{user}")
-    Observable<user> getOUser(@Path("user") String user);
+    @GET("/users/{User}")
+    Observable<User> getOUser(@Path("User") String user);
 
 
-   @GET("/users/{user}/repos")
-    Observable<ArrayList<userdata>> getOUserData(@Path("user") String user);
+   @GET("/users/{User}/repos")
+    Observable<ArrayList<UserData>> getOUserData(@Path("User") String user);
 
 
-   @GET("repos/{user}/{reponame}/commits")
-    Observable<ArrayList<commitdata>> getOcommitdata(@Path("user") String user,@Path("reponame") String reponame);
+   @GET("repos/{User}/{reponame}/commits")
+    Observable<ArrayList<CommitData>> getOcommitdata(@Path("User") String user, @Path("reponame") String reponame);
 
 
-    @GET("/repos/{user}/{reponame}/contributors")
-    Observable<ArrayList<usercommits>> getcontributors(
-            @Path("user") String user, @Path("reponame") String reponame);
+    @GET("/repos/{User}/{reponame}/contributors")
+    Observable<ArrayList<UserCommits>> getcontributors(
+            @Path("User") String user, @Path("reponame") String reponame);
 
-   // @GET("users/{user}")
-   // user getUser(@Path("user") String user);
+   // @GET("users/{User}")
+   // User getUser(@Path("User") String User);
 }

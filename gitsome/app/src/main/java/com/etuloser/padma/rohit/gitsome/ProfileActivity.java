@@ -1,6 +1,5 @@
 package com.etuloser.padma.rohit.gitsome;
 
-import android.graphics.pdf.PdfDocument;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,52 +8,34 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.etuloser.padma.rohit.gitsome.model.commitmodel.commitdata;
-import com.etuloser.padma.rohit.gitsome.model.user;
-import com.etuloser.padma.rohit.gitsome.model.userandrepo;
-import com.etuloser.padma.rohit.gitsome.model.usercommits;
-import com.etuloser.padma.rohit.gitsome.model.userdata;
+import com.etuloser.padma.rohit.gitsome.model.User;
+import com.etuloser.padma.rohit.gitsome.model.commitmodel.CommitData;
+import com.etuloser.padma.rohit.gitsome.model.UserAndRepo;
+import com.etuloser.padma.rohit.gitsome.model.UserCommits;
+import com.etuloser.padma.rohit.gitsome.model.UserData;
 import com.etuloser.padma.rohit.gitsome.retroInterface.IGithub;
 import com.etuloser.padma.rohit.gitsome.service.GithubService;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
-import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.squareup.picasso.Picasso;
 
-import org.eclipse.egit.github.core.Contributor;
-import org.eclipse.egit.github.core.IRepositoryIdProvider;
-import org.eclipse.egit.github.core.Repository;
-import org.eclipse.egit.github.core.RepositoryCommit;
-import org.eclipse.egit.github.core.User;
-import org.eclipse.egit.github.core.client.GitHubClient;
-import org.eclipse.egit.github.core.service.CommitService;
-import org.eclipse.egit.github.core.service.RepositoryService;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
-import io.reactivex.Observer;
-import io.reactivex.Scheduler;
-import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.BiFunction;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.observers.DisposableObserver;
-import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -82,14 +63,14 @@ public class ProfileActivity extends AppCompatActivity {
     @BindView(R.id.repocommitchart)
      PieChart repocommitchar;
 
-    user u;
-    userandrepo uar;
+    User u;
+    UserAndRepo uar;
     private IGithub githubService;
     CompositeDisposable reposDisposable;
     ArrayList<String> repolist;
-    HashMap<String,ArrayList<commitdata>> hcommitdata;
+    HashMap<String,ArrayList<CommitData>> hcommitdata;
     HashMap<String,Integer> repocommits;
-    ArrayList<ArrayList<commitdata>> clist=new ArrayList<>();
+    ArrayList<ArrayList<CommitData>> clist=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,11 +87,11 @@ public class ProfileActivity extends AppCompatActivity {
 
         if (getIntent().getExtras() != null) {
             Bundle b = getIntent().getExtras();
-            uar = (userandrepo) b.getSerializable("gituser");
+            uar = (UserAndRepo) b.getParcelable("gituser");
             u = uar.getU();
             u.setMessage(" ");
             u.setDocumentation_url(" ");
-            Log.d("user in profile", u.toString());
+            Log.d("User in profile", u.toString());
         }
 
         if (u.getAvatar_url() != null) {
@@ -124,7 +105,6 @@ public class ProfileActivity extends AppCompatActivity {
         repolist=new ArrayList<>();
         for(int i=0;i<uar.getRepo().size();i++)
         {
-
             repolist.add(uar.getRepo().get(i).getName());
         }
 
@@ -150,16 +130,16 @@ public class ProfileActivity extends AppCompatActivity {
     public void getcontributors(ArrayList<String> repolist)
     {
                        reposDisposable.add( Observable.fromIterable(repolist)
-                                .flatMap(new Function<String, ObservableSource<Pair<String,ArrayList<usercommits>>>>() {
+                                .flatMap(new Function<String, ObservableSource<Pair<String,ArrayList<UserCommits>>>>() {
                                                                    @Override
-                                                                   public ObservableSource<Pair<String,ArrayList<usercommits>>> apply(String s) throws Exception {
+                                                                   public ObservableSource<Pair<String,ArrayList<UserCommits>>> apply(String s) throws Exception {
 
                                                                        return Observable.zip(
                                                                                Observable.just(s),
-                                                                               githubService.getcontributors(u.getLogin(), s), new BiFunction<String, ArrayList<usercommits>, Pair<String, ArrayList<usercommits>>>() {
+                                                                               githubService.getcontributors(u.getLogin(), s), new BiFunction<String, ArrayList<UserCommits>, Pair<String, ArrayList<UserCommits>>>() {
                                                                                    @Override
-                                                                                   public Pair<String, ArrayList<usercommits>> apply(String s, ArrayList<usercommits> usercommits) throws Exception {
-                                                                                       return new Pair<String,ArrayList<usercommits>>(s, usercommits);
+                                                                                   public Pair<String, ArrayList<UserCommits>> apply(String s, ArrayList<UserCommits> usercommits) throws Exception {
+                                                                                       return new Pair<String,ArrayList<UserCommits>>(s, usercommits);
                                                                                    }
                                                                                }
 
@@ -169,22 +149,22 @@ public class ProfileActivity extends AppCompatActivity {
 
 
                            ).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
-         .subscribeWith(new DisposableObserver<Pair<String, ArrayList<usercommits>>>() {
+         .subscribeWith(new DisposableObserver<Pair<String, ArrayList<UserCommits>>>() {
 
 
              @Override
-             public void onNext(Pair<String, ArrayList<usercommits>> stringArrayListPair) {
+             public void onNext(Pair<String, ArrayList<UserCommits>> stringArrayListPair) {
 
 
-                 for(usercommits uc:stringArrayListPair.second)
+                 for(UserCommits uc:stringArrayListPair.second)
                  {
                      if(uc.getLogin().equals(u.getLogin()))
                      {
                          repocommits.put(stringArrayListPair.first,uc.getContributions());
                          break;
                      }
-
                  }
+
              }
 
 
@@ -216,23 +196,23 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         reposDisposable.add(Observable.fromIterable(repolist)
-                .flatMap(new Function<String, ObservableSource<Pair<String,ArrayList<commitdata>>>>() {
+                .flatMap(new Function<String, ObservableSource<Pair<String,ArrayList<CommitData>>>>() {
                     @Override
-                    public ObservableSource<Pair<String,ArrayList<commitdata>>> apply(String s) throws Exception {
+                    public ObservableSource<Pair<String,ArrayList<CommitData>>> apply(String s) throws Exception {
 
                         Log.d("in observable source",s);
                         return Observable.zip(
                                 Observable.just(s),
                                 githubService.getOcommitdata("rpadma",s),
-                                new BiFunction<String, ArrayList<commitdata>, Pair<String, ArrayList<commitdata>>>() {
+                                new BiFunction<String, ArrayList<CommitData>, Pair<String, ArrayList<CommitData>>>() {
                                     @Override
-                                    public Pair<String, ArrayList<commitdata>> apply(@NonNull String id, @NonNull ArrayList<commitdata> productResponse) throws Exception {
+                                    public Pair<String, ArrayList<CommitData>> apply(@NonNull String id, @NonNull ArrayList<CommitData> productResponse) throws Exception {
                                         Log.d("in function",id);
-                                        return new Pair<String, ArrayList<commitdata>>(id, productResponse);
+                                        return new Pair<String, ArrayList<CommitData>>(id, productResponse);
                                     }
                                 });
                     }}).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
-                        .subscribeWith(new DisposableObserver<Pair<String, ArrayList<commitdata>>>(){
+                        .subscribeWith(new DisposableObserver<Pair<String, ArrayList<CommitData>>>(){
 
 
                             /**
@@ -246,7 +226,7 @@ public class ProfileActivity extends AppCompatActivity {
                              * @param userArrayListPair the item emitted by the Observable
                              */
                             @Override
-                            public void onNext(Pair<String, ArrayList<commitdata>> userArrayListPair) {
+                            public void onNext(Pair<String, ArrayList<CommitData>> userArrayListPair) {
 
                                 hcommitdata.put(userArrayListPair.first,userArrayListPair.second);
                                 Log.d("demo",userArrayListPair.first.toString() +" "+String.valueOf(userArrayListPair.second.size()));
@@ -321,7 +301,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
 
-    public void bindrepochart(ArrayList<userdata> ud)
+    public void bindrepochart(ArrayList<UserData> ud)
     {
 
 
@@ -332,7 +312,7 @@ public class ProfileActivity extends AppCompatActivity {
         ArrayList<String> labels = new ArrayList<String>();
         ArrayList<PieEntry> entries1 = new ArrayList<>();
 
-        for  (userdata u:ud)
+        for  (UserData u:ud)
         {
             if(!projectcount.containsKey(u.getLanguage())) {
                 projectcount.put(u.getLanguage(), 1);

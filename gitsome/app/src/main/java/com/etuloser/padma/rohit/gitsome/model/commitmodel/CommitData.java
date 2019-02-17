@@ -4,7 +4,7 @@ package com.etuloser.padma.rohit.gitsome.model.commitmodel;
  * Created by rohitpadma on 1/12/18.
  */
 
-public class commitdata {
+public class CommitData {
 
     private Author author;
     private Commit commit;
