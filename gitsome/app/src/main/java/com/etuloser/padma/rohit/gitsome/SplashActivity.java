@@ -1,10 +1,13 @@
 package com.etuloser.padma.rohit.gitsome;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.etuloser.padma.rohit.gitsome.Activities.Main.MainActivity;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -13,34 +16,16 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_splash);
-        Thread runnerlog=new Thread()
-        {
-            public void run()
-            {
-                try
-                {
-                    int logoTimer=0;
-                    while(logoTimer<2000)
-                    {
-                        sleep(100);
-                        logoTimer=logoTimer+100;
-                    }
-                    //startActivity(new Intent("com.computer.mode.HowTo"));
-                    Intent i=new Intent(SplashActivity.this,MainActivity.class);
-                    startActivity(i);
+        final Handler handler=new Handler();
 
-                }catch (Exception e) {
-                    // TODO: handle exception
-                    e.printStackTrace();
-                }finally
-                {
-                    finish();
-                }
+        final Runnable r = new Runnable() {
+            public void run() {
+                Intent i=new Intent(SplashActivity.this, MainActivity.class);
+                startActivity(i);
             }
-
         };
 
-        runnerlog.start();
+        handler.postDelayed(r, 1000);
     }
 
 

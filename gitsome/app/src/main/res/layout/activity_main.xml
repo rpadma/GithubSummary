@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.etuloser.padma.rohit.gitsome.MainActivity">
+    tools:context=".Activities.Main.MainActivity">
 
     <EditText
         android:id="@+id/edxusername"
@@ -33,7 +33,6 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="Search"
-        android:onClick="SearchUser"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

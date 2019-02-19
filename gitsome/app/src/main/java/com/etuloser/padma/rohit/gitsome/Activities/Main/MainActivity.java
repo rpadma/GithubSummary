@@ -1,22 +1,25 @@
-package com.etuloser.padma.rohit.gitsome;
+package com.etuloser.padma.rohit.gitsome.Activities.Main;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.etuloser.padma.rohit.gitsome.Activities.Profile.ProfileActivity;
+import com.etuloser.padma.rohit.gitsome.R;
 import com.etuloser.padma.rohit.gitsome.model.User;
 import com.etuloser.padma.rohit.gitsome.model.UserAndRepo;
 import com.etuloser.padma.rohit.gitsome.model.UserData;
 import com.etuloser.padma.rohit.gitsome.retroInterface.IGithub;
 import com.etuloser.padma.rohit.gitsome.service.GithubService;
+import com.etuloser.padma.rohit.gitsome.util.Constants;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -47,15 +50,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
-        String githubToken = getResources().getString(R.string.githubToken);
-         githubService = (IGithub) GithubService.createGithubService(githubToken);
-
-            _disposables = new CompositeDisposable();
-
-
+        String githubToken = Constants.token;
+        githubService = (IGithub) GithubService.createGithubService(githubToken);
+        _disposables = new CompositeDisposable();
     }
-        public void SearchUser(View v){
+
+
+    @OnClick(R.id.btnsearch)
+    public void SearchUser(){
      final String user1=edxusername.getText().toString().trim();
      if(!user1.isEmpty())
      {
@@ -128,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
     {
 
         _disposables.dispose();
-        Intent i=new Intent(this,ProfileActivity.class);
+        Intent i=new Intent(this, ProfileActivity.class);
         Bundle b=new Bundle();
         b.putParcelable("gituser",gituser);
         i.putExtras(b);

@@ -1,4 +1,4 @@
-package com.etuloser.padma.rohit.gitsome;
+package com.etuloser.padma.rohit.gitsome.Activities.Profile;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.etuloser.padma.rohit.gitsome.R;
 import com.etuloser.padma.rohit.gitsome.model.User;
 import com.etuloser.padma.rohit.gitsome.model.commitmodel.CommitData;
 import com.etuloser.padma.rohit.gitsome.model.UserAndRepo;
@@ -15,6 +16,7 @@ import com.etuloser.padma.rohit.gitsome.model.UserCommits;
 import com.etuloser.padma.rohit.gitsome.model.UserData;
 import com.etuloser.padma.rohit.gitsome.retroInterface.IGithub;
 import com.etuloser.padma.rohit.gitsome.service.GithubService;
+import com.etuloser.padma.rohit.gitsome.util.Constants;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.PieData;
@@ -38,7 +40,7 @@ import io.reactivex.functions.Function;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity implements ProfileContract.View{
 
     @BindView(R.id.imgavatar)
     ImageView imgavatar;
@@ -72,6 +74,8 @@ public class ProfileActivity extends AppCompatActivity {
     HashMap<String,Integer> repocommits;
     ArrayList<ArrayList<CommitData>> clist=new ArrayList<>();
 
+    ProfilePresenter profilePresenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,11 +83,7 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
         ButterKnife.bind(this);
 
-        String githubToken = getResources().getString(R.string.githubToken);
-        githubService = (IGithub) GithubService.createGithubService(githubToken);
-        reposDisposable=new CompositeDisposable();
-        hcommitdata=new HashMap<>();
-        repocommits=new HashMap<>();
+
 
         if (getIntent().getExtras() != null) {
             Bundle b = getIntent().getExtras();
@@ -116,157 +116,15 @@ public class ProfileActivity extends AppCompatActivity {
             repochar.setVisibility(View.GONE);
         }
 
+profilePresenter=new ProfilePresenter(this,uar);
 
-        getrepodata(repolist);
+        profilePresenter.getrepodata(repolist);
 
-        getcontributors(repolist);
-
-
-
+        profilePresenter.getcontributors(repolist);
 
     }
 
-
-    public void getcontributors(ArrayList<String> repolist)
-    {
-                       reposDisposable.add( Observable.fromIterable(repolist)
-                                .flatMap(new Function<String, ObservableSource<Pair<String,ArrayList<UserCommits>>>>() {
-                                                                   @Override
-                                                                   public ObservableSource<Pair<String,ArrayList<UserCommits>>> apply(String s) throws Exception {
-
-                                                                       return Observable.zip(
-                                                                               Observable.just(s),
-                                                                               githubService.getcontributors(u.getLogin(), s), new BiFunction<String, ArrayList<UserCommits>, Pair<String, ArrayList<UserCommits>>>() {
-                                                                                   @Override
-                                                                                   public Pair<String, ArrayList<UserCommits>> apply(String s, ArrayList<UserCommits> usercommits) throws Exception {
-                                                                                       return new Pair<String,ArrayList<UserCommits>>(s, usercommits);
-                                                                                   }
-                                                                               }
-
-                                                                       );
-                                                                   }
-                                                               }
-
-
-                           ).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
-         .subscribeWith(new DisposableObserver<Pair<String, ArrayList<UserCommits>>>() {
-
-
-             @Override
-             public void onNext(Pair<String, ArrayList<UserCommits>> stringArrayListPair) {
-
-
-                 for(UserCommits uc:stringArrayListPair.second)
-                 {
-                     if(uc.getLogin().equals(u.getLogin()))
-                     {
-                         repocommits.put(stringArrayListPair.first,uc.getContributions());
-                         break;
-                     }
-                 }
-
-             }
-
-
-             @Override
-             public void onError(Throwable e) {
-
-             }
-
-
-             @Override
-             public void onComplete() {
-
-                 bindrepocommit(repocommits);
-
-             }
-         })
-
- );
-
-
-    }
-
-
-
-    public void getrepodata(ArrayList<String> repolist)
-    {
-
-
-
-
-        reposDisposable.add(Observable.fromIterable(repolist)
-                .flatMap(new Function<String, ObservableSource<Pair<String,ArrayList<CommitData>>>>() {
-                    @Override
-                    public ObservableSource<Pair<String,ArrayList<CommitData>>> apply(String s) throws Exception {
-
-                        Log.d("in observable source",s);
-                        return Observable.zip(
-                                Observable.just(s),
-                                githubService.getOcommitdata("rpadma",s),
-                                new BiFunction<String, ArrayList<CommitData>, Pair<String, ArrayList<CommitData>>>() {
-                                    @Override
-                                    public Pair<String, ArrayList<CommitData>> apply(@NonNull String id, @NonNull ArrayList<CommitData> productResponse) throws Exception {
-                                        Log.d("in function",id);
-                                        return new Pair<String, ArrayList<CommitData>>(id, productResponse);
-                                    }
-                                });
-                    }}).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
-                        .subscribeWith(new DisposableObserver<Pair<String, ArrayList<CommitData>>>(){
-
-
-                            /**
-                             * Provides the Observer with a new item to observe.
-                             * <p>
-                             * The {@link Observable} may call this method 0 or more times.
-                             * <p>
-                             * The {@code Observable} will not call this method again after it calls either {@link #onComplete} or
-                             * {@link #onError}.
-                             *
-                             * @param userArrayListPair the item emitted by the Observable
-                             */
-                            @Override
-                            public void onNext(Pair<String, ArrayList<CommitData>> userArrayListPair) {
-
-                                hcommitdata.put(userArrayListPair.first,userArrayListPair.second);
-                                Log.d("demo",userArrayListPair.first.toString() +" "+String.valueOf(userArrayListPair.second.size()));
-
-                            }
-
-                            /**
-                             * Notifies the Observer that the {@link Observable} has experienced an error condition.
-                             * <p>
-                             * If the {@link Observable} calls this method, it will not thereafter call {@link #onNext} or
-                             * {@link #onComplete}.
-                             *
-                             * @param e the exception encountered by the Observable
-                             */
-                            @Override
-                            public void onError(Throwable e) {
-
-                            }
-
-                            /**
-                             * Notifies the Observer that the {@link Observable} has finished sending push-based notifications.
-                             * <p>
-                             * The {@link Observable} will not call this method if it calls {@link #onError}.
-                             */
-                            @Override
-                            public void onComplete() {
-
-                            }
-                        }));
-
-
-
-    }
-
-
-
-
-
-
-
+@Override
   public void bindrepocommit(HashMap<String,Integer> repocommits)
   {
       ArrayList<String> labels = new ArrayList<String>();
@@ -290,17 +148,9 @@ public class ProfileActivity extends AppCompatActivity {
       d.setText("Commits per repo");
       repocommitchar.setDescription(d);
 
-
-
-
-
-
-
   }
 
-
-
-
+    @Override
     public void bindrepochart(ArrayList<UserData> ud)
     {
 
@@ -380,6 +230,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
 
+    @Override
     public void bindstarrepo(HashMap<String,Integer> starcount)
     {
 
@@ -409,6 +260,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
 
+    @Override
     public void bindprojectstar(HashMap<String,Integer> projectstarcount)
     {
 
