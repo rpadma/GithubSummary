@@ -286,15 +286,25 @@ repocommitchar.invalidate();
         }
 
 
-        PieDataSet dataset1 = new PieDataSet(entries1,"Star Count");
+        PieDataSet dataset1 = new PieDataSet(entries1," ");
 
         PieData pd=new PieData(dataset1);
-        starrepochar.setData(pd);
+
 
         dataset1.setColors(ColorTemplate.MATERIAL_COLORS);
+        dataset1.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+        dataset1.setValueTextColor(Color.BLACK);
+        pd.setValueTextColor(Color.BLACK);
+        dataset1.setValueLineColor(getResources().getColor(R.color.colorPrimaryDark));
         Description d=new Description();
         d.setText("Stars per Language");
+        d.setTextColor(Color.RED);
+
         starrepochar.setDescription(d);
+        starrepochar.setData(pd);
+        starrepochar.getLegend().setTextColor(Color.BLACK);
+        starrepochar.setEntryLabelColor(Color.BLACK);
+
 
 
     }
