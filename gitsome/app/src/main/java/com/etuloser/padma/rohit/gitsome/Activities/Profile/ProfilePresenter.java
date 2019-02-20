@@ -75,7 +75,9 @@ public class ProfilePresenter implements ProfileContract.Presenter {
                         {
                             if(uc.getLogin().equals(uar.getU().getLogin()))
                             {
+
                                 repocommits.put(stringArrayListPair.first,uc.getContributions());
+
                                 break;
                             }
                         }
@@ -93,6 +95,7 @@ public class ProfilePresenter implements ProfileContract.Presenter {
                     public void onComplete() {
 
                         view.bindrepocommit(repocommits);
+                        view.notifyChart();
 
                     }
                 })

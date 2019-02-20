@@ -15,5 +15,6 @@ public class ProfileContract {
         void bindrepochart(ArrayList<UserData> ud);
         void bindstarrepo(HashMap<String,Integer> starcount);
         void bindprojectstar(HashMap<String,Integer> projectstarcount);
+        void notifyChart();
     }
 }

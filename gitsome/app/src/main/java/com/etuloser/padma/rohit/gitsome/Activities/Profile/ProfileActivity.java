@@ -1,5 +1,6 @@
 package com.etuloser.padma.rohit.gitsome.Activities.Profile;
 
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,9 +31,11 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.renderer.YAxisRenderer;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.squareup.picasso.Picasso;
 
@@ -162,6 +165,18 @@ int i=0;
       Description d=new Description();
       d.setText("Commits per repo");
       repocommitchar.setDescription(d);
+
+      repocommitchar.getXAxis().setValueFormatter(new IndexAxisValueFormatter(la));
+      repocommitchar.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+      repocommitchar.getXAxis().setGranularity(1f);
+      repocommitchar.getXAxis().setGranularityEnabled(true);
+      repocommitchar.getXAxis().setLabelCount(la.length);
+      repocommitchar.setTouchEnabled(false);
+repocommitchar.notifyDataSetChanged();
+repocommitchar.invalidate();
+
+   //   repocommitchar.setExtraOffsets(30,10,0,10);
+
 
    /*  PieDataSet dataset1 = new PieDataSet(entries1,"Commits Count");
 
@@ -310,6 +325,11 @@ int i=0;
         Description d=new Description();
         d.setText("Stars per Repo");
         projectstarchar.setDescription(d);
+    }
+
+    @Override
+    public void notifyChart() {
+        repocommitchar.notifyDataSetChanged();
     }
 
 
