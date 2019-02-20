@@ -17,11 +17,22 @@ import com.etuloser.padma.rohit.gitsome.model.UserData;
 import com.etuloser.padma.rohit.gitsome.retroInterface.IGithub;
 import com.etuloser.padma.rohit.gitsome.service.GithubService;
 import com.etuloser.padma.rohit.gitsome.util.Constants;
+import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.squareup.picasso.Picasso;
 
@@ -63,7 +74,7 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
     PieChart projectstarchar;
 
     @BindView(R.id.repocommitchart)
-     PieChart repocommitchar;
+    HorizontalBarChart repocommitchar;
 
     User u;
     UserAndRepo uar;
@@ -116,10 +127,8 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
             repochar.setVisibility(View.GONE);
         }
 
-profilePresenter=new ProfilePresenter(this,uar);
-
+       profilePresenter=new ProfilePresenter(this,uar);
         profilePresenter.getrepodata(repolist);
-
         profilePresenter.getcontributors(repolist);
 
     }
@@ -128,17 +137,33 @@ profilePresenter=new ProfilePresenter(this,uar);
   public void bindrepocommit(HashMap<String,Integer> repocommits)
   {
       ArrayList<String> labels = new ArrayList<String>();
-      ArrayList<PieEntry> entries1 = new ArrayList<>();
+    //  ArrayList<PieEntry> entries1 = new ArrayList<>();
+      ArrayList<BarEntry> entries1 = new ArrayList<>();
 
+int i=0;
       for (String temp:repocommits.keySet())
       {
 
           labels.add(temp);
-          entries1.add(new PieEntry(repocommits.get(temp),temp));
+          //entries1.add(new PieEntry(repocommits.get(temp),temp));
+          entries1.add(new BarEntry(i,repocommits.get(temp)));
+          i++;
+          Log.d("checkrepo",temp);
 
       }
 
-      PieDataSet dataset1 = new PieDataSet(entries1,"Commits Count");
+      String [] la=new String[labels.size()];
+      la=labels.toArray(la);
+      BarDataSet dataSet=new BarDataSet(entries1,"Commits count");
+      dataSet.setStackLabels(la);
+
+      repocommitchar.setData(new BarData(dataSet));
+      dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+      Description d=new Description();
+      d.setText("Commits per repo");
+      repocommitchar.setDescription(d);
+
+   /*  PieDataSet dataset1 = new PieDataSet(entries1,"Commits Count");
 
       PieData pd=new PieData(dataset1);
       repocommitchar.setData(pd);
@@ -146,7 +171,7 @@ profilePresenter=new ProfilePresenter(this,uar);
       dataset1.setColors(ColorTemplate.MATERIAL_COLORS);
       Description d=new Description();
       d.setText("Commits per repo");
-      repocommitchar.setDescription(d);
+      repocommitchar.setDescription(d);*/
 
   }
 
