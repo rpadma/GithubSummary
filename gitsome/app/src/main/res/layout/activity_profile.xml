@@ -4,21 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/demoLayout"
     tools:context=".Activities.Profile.ProfileActivity">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             >
-
             <LinearLayout
+                android:id="@+id/parentLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
 
     <ImageView
         android:id="@+id/imgavatar"
@@ -28,28 +27,16 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.034"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.021"
         app:srcCompat="@mipmap/ic_launcher" />
 
     <LinearLayout
-        android:layout_width="189dp"
-        android:layout_height="127dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.954"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.026">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/txtusername"
@@ -59,12 +46,7 @@
             android:fontFamily="monospace"
             android:text="Username"
             android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.744"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.036" />
+            />
 
         <TextView
             android:id="@+id/txtrepo"
@@ -73,13 +55,7 @@
             android:layout_marginLeft="3pt"
             android:fontFamily="monospace"
             android:text="repo"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.68"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.093" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/txtjoin"
@@ -88,13 +64,7 @@
             android:layout_marginLeft="3pt"
             android:fontFamily="monospace"
             android:text="Joined "
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.716"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.147" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/txtviewprofile"
@@ -103,16 +73,22 @@
             android:layout_marginLeft="3pt"
             android:fontFamily="monospace"
             android:text="view github"
+            android:textSize="18sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Print Pdf"
+            android:layout_marginLeft="3pt"
             android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.819"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:fontFamily="monospace"
+            android:id="@+id/printPdf" />
+
+
     </LinearLayout>
 
 
             </LinearLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
@@ -122,9 +98,7 @@
                 <include layout="@layout/charta" />
 
             </LinearLayout>
-
-
-    <LinearLayout
+            <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:orientation="vertical"
@@ -134,10 +108,6 @@
         <include layout="@layout/chartb" />
 
     </LinearLayout>
-
-
-
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
@@ -148,8 +118,6 @@
                 <include layout="@layout/chartc" />
 
             </LinearLayout>
-
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
@@ -162,7 +130,6 @@
                     android:layout_width="match_parent"/>
 
             </LinearLayout>
-
         </LinearLayout>
     </ScrollView>
 

@@ -1,14 +1,22 @@
 package com.etuloser.padma.rohit.gitsome.Activities.Profile;
 
 import android.graphics.Color;
+import android.graphics.pdf.PdfDocument;
+import android.os.Environment;
+import android.print.PrintAttributes;
+import android.print.pdf.PrintedPdfDocument;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.etuloser.padma.rohit.gitsome.Activities.Main.MainActivity;
 import com.etuloser.padma.rohit.gitsome.R;
 import com.etuloser.padma.rohit.gitsome.model.User;
 import com.etuloser.padma.rohit.gitsome.model.commitmodel.CommitData;
@@ -39,11 +47,18 @@ import com.github.mikephil.charting.renderer.YAxisRenderer;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -66,6 +81,8 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
     TextView txtjoin;
     @BindView(R.id.txtviewprofile)
     TextView txtviewprofile;
+    @BindView(R.id.parentLayout)
+    LinearLayout parentLayout;
 
     @BindView(R.id.repolangchart)
     PieChart repochar;
@@ -78,6 +95,9 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
 
     @BindView(R.id.repocommitchart)
     HorizontalBarChart repocommitchar;
+
+    @BindView(R.id.demoLayout)
+    LinearLayout demoLayout;
 
     User u;
     UserAndRepo uar;
@@ -112,7 +132,7 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
             Picasso.with(this).load(u.getAvatar_url()).fit().into(imgavatar);
         }
         String joinyear = u.getCreated_at();
-        txtjoin.setText("Joined" + 4 + " Years ago");
+        txtjoin.setText("Joined " + 4 + " Years ago");
         txtrepo.setText(u.getPublic_repos() + " repos");
         txtname.setText(u.getName());
 
@@ -359,4 +379,66 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
             reposDisposable.dispose();
         }
         }
+
+    @OnClick(R.id.printPdf)
+    public void printPdf(){
+
+        PrintAttributes printAttrs = new PrintAttributes.Builder().
+                setColorMode(PrintAttributes.COLOR_MODE_COLOR).
+                setMediaSize(PrintAttributes.MediaSize.NA_LETTER).
+                setResolution(new PrintAttributes.Resolution("zooey", PRINT_SERVICE, 300, 300)).
+                setMinMargins(PrintAttributes.Margins.NO_MARGINS).
+                build();
+        PdfDocument document = new PrintedPdfDocument(this, printAttrs);
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(parentLayout.getWidth(), parentLayout.getHeight(), 1).create();
+        PdfDocument.Page page = document.startPage(pageInfo);
+        View content = findViewById(R.id.parentLayout);
+        content.draw(page.getCanvas());
+        document.finishPage(page);
+
+        PdfDocument.PageInfo pageInfo1 = new PdfDocument.PageInfo.Builder(repochar.getWidth(), repochar.getHeight(), 2).create();
+        PdfDocument.Page page1 = document.startPage(pageInfo1);
+        View content1 = findViewById(R.id.repolangchart);
+        content1.draw(page1.getCanvas());
+        document.finishPage(page1);
+
+        PdfDocument.PageInfo pageInfo2 = new PdfDocument.PageInfo.Builder(starrepochar.getWidth(), starrepochar.getHeight(), 3).create();
+        PdfDocument.Page page2 = document.startPage(pageInfo2);
+        View content2 = findViewById(R.id.starlangchart);
+        content2.draw(page2.getCanvas());
+        document.finishPage(page2);
+
+
+        PdfDocument.PageInfo pageInfo3 = new PdfDocument.PageInfo.Builder(starrepochar.getWidth(), starrepochar.getHeight(), 4).create();
+        PdfDocument.Page page3 = document.startPage(pageInfo3);
+        View content3 = findViewById(R.id.projectstarchart);
+        content3.draw(page3.getCanvas());
+        document.finishPage(page3);
+
+
+        PdfDocument.PageInfo pageInfo4 = new PdfDocument.PageInfo.Builder(demoLayout.getWidth(), demoLayout.getHeight(), 5).create();
+        PdfDocument.Page page4 = document.startPage(pageInfo4);
+        View content5 = findViewById(R.id.repocommitchart);
+        content5.draw(page4.getCanvas());
+        document.finishPage(page4);
+
+
+
+        // Here you could add more pages in a longer doc app, but you'd have
+        // to handle page-breaking yourself in e.g., write your own word processor...
+        // Now write the PDF document to a file; it actually needs to be a file
+        // since the Share mechanism can't accept a byte[]. though it can
+        // accept a String/CharSequence. Meh.
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyyhhmmss");
+
+            File f = new File(Environment.getExternalStorageDirectory().getPath() + "/pruebaAppModerator"+sdf.format(Calendar.getInstance().getTime())+".pdf");
+            FileOutputStream fos = new FileOutputStream(f);
+            document.writeTo(fos);
+            document.close();
+            fos.close();
+        } catch (IOException e) {
+            throw new RuntimeException("Error generating file", e);
+        }
+    }
 }
