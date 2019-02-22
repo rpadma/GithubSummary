@@ -95,7 +95,6 @@ public class ProfilePresenter implements ProfileContract.Presenter {
                     public void onComplete() {
 
                         view.bindrepocommit(repocommits);
-                        view.notifyChart();
 
                     }
                 })

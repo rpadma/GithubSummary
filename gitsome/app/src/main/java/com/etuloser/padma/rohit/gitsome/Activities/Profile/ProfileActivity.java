@@ -143,7 +143,7 @@ public class ProfileActivity extends AppCompatActivity implements ProfileContrac
     //  ArrayList<PieEntry> entries1 = new ArrayList<>();
       ArrayList<BarEntry> entries1 = new ArrayList<>();
 
-int i=0;
+     int i=0;
       for (String temp:repocommits.keySet())
       {
 
@@ -172,8 +172,8 @@ int i=0;
       repocommitchar.getXAxis().setGranularityEnabled(true);
       repocommitchar.getXAxis().setLabelCount(la.length);
       repocommitchar.setTouchEnabled(false);
-repocommitchar.notifyDataSetChanged();
-repocommitchar.invalidate();
+      repocommitchar.notifyDataSetChanged();
+      repocommitchar.invalidate();
 
    //   repocommitchar.setExtraOffsets(30,10,0,10);
 
@@ -248,10 +248,15 @@ repocommitchar.invalidate();
         PieData pd=new PieData(dataset1);
         repochar.setData(pd);
 
-        dataset1.setColors(ColorTemplate.MATERIAL_COLORS);
+        dataset1.setColors(ColorTemplate.COLORFUL_COLORS);
+        dataset1.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+        dataset1.setValueTextColor(Color.BLACK);
         Description d=new Description();
         d.setText("Repos per Language");
         repochar.setDescription(d);
+        repochar.getLegend().setTextColor(Color.BLACK);
+        repochar.setEntryLabelColor(Color.BLACK);
+
 
 
         if(starcount.size()>0) {
@@ -332,9 +337,13 @@ repocommitchar.invalidate();
         projectstarchar.setData(pd);
 
         dataset1.setColors(ColorTemplate.COLORFUL_COLORS);
+        dataset1.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+        dataset1.setValueTextColor(Color.BLACK);
         Description d=new Description();
         d.setText("Stars per Repo");
         projectstarchar.setDescription(d);
+        projectstarchar.setEntryLabelColor(Color.BLACK);
+        projectstarchar.setPadding(50,0,50,0);
     }
 
     @Override
