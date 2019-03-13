@@ -39,7 +39,6 @@ public class ProfilePresenter implements ProfileContract.Presenter {
         githubService = (IGithub) GithubService.createGithubService(githubToken);
         reposDisposable=new CompositeDisposable();
         this.uar=uar;
-
     }
 
     @Override
@@ -69,33 +68,23 @@ public class ProfilePresenter implements ProfileContract.Presenter {
 
                     @Override
                     public void onNext(Pair<String, ArrayList<UserCommits>> stringArrayListPair) {
-
-
                         for(UserCommits uc:stringArrayListPair.second)
                         {
                             if(uc.getLogin().equals(uar.getU().getLogin()))
                             {
-
                                 repocommits.put(stringArrayListPair.first,uc.getContributions());
-
                                 break;
                             }
                         }
 
                     }
-
-
                     @Override
                     public void onError(Throwable e) {
 
                     }
-
-
                     @Override
                     public void onComplete() {
-
                         view.bindrepocommit(repocommits);
-
                     }
                 })
 

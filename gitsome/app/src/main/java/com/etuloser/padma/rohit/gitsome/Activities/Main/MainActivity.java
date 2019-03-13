@@ -37,12 +37,10 @@ public class MainActivity extends AppCompatActivity {
     Button btnsearch;
     @BindView(R.id.edxusername)
     EditText edxusername;
-
-
     User u;
     ArrayList<UserData> userDataArrayList =new ArrayList<>();
-  private IGithub githubService;
-  private CompositeDisposable _disposables;
+    private IGithub githubService;
+   private CompositeDisposable _disposables;
     Observable<UserAndRepo> combined;
 
   @Override
@@ -54,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
         githubService = (IGithub) GithubService.createGithubService(githubToken);
         _disposables = new CompositeDisposable();
     }
-
 
     @OnClick(R.id.btnsearch)
     public void SearchUser(){
@@ -69,13 +66,9 @@ public class MainActivity extends AppCompatActivity {
          Observable<ArrayList<UserData>> repoObservable = githubService.getOUserData(user1)
                  .subscribeOn(Schedulers.newThread())
                  .observeOn(AndroidSchedulers.mainThread());
-
-
-
          combined = Observable.zip(userObservable, repoObservable, new BiFunction<User, ArrayList<UserData>, UserAndRepo>() {
              @Override
              public UserAndRepo apply(User u, ArrayList<UserData> userdata) throws Exception {
-
 
                  Log.d("User",u.toString());
                  UserAndRepo urobject=new UserAndRepo();
@@ -111,24 +104,15 @@ public class MainActivity extends AppCompatActivity {
                             }
          );
 
-
-
-
      }
      else
      {
          Toast.makeText(this.getApplicationContext(),"Enter a username",Toast.LENGTH_SHORT).show();
      }
-
-
     }
-
-
-
 
     public void Senduser(UserAndRepo gituser)
     {
-
         _disposables.dispose();
         Intent i=new Intent(this, ProfileActivity.class);
         Bundle b=new Bundle();
