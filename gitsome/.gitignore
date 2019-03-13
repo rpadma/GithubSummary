@@ -12,4 +12,11 @@
 .idea/misc.xml
 ../.DS_Store
 
+.idea/*
+.idea/gradle.xml
+.idea/misc.xml
+../.DS_Store
+
+
+
 
