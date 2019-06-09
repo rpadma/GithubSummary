@@ -16,7 +16,12 @@
 .idea/gradle.xml
 .idea/misc.xml
 ../.DS_Store
+.DS_Store
+
+*Constants.java
+../Constants.java
 
 
 
 
+app/src/main/java/com/etuloser/padma/rohit/gitsome/util/Constants.java
