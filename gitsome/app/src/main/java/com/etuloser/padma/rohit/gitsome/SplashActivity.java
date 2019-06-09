@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.etuloser.padma.rohit.gitsome.Activities.Main.MainActivity;
+import com.etuloser.padma.rohit.gitsome.activities.Main.MainActivity;
 
 public class SplashActivity extends AppCompatActivity {
 

@@ -11,12 +11,13 @@ import java.io.Serializable;
 
 public class UserData implements Serializable, Parcelable {
 
-
     String name;
     String created_at;
     String language;
     int stargazers_count;
 
+    public UserData() {
+    }
 
     protected UserData(Parcel in) {
         name = in.readString();
@@ -99,5 +100,15 @@ public class UserData implements Serializable, Parcelable {
         dest.writeString(created_at);
         dest.writeString(language);
         dest.writeInt(stargazers_count);
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "name='" + name + '\'' +
+                ", created_at='" + created_at + '\'' +
+                ", language='" + language + '\'' +
+                ", stargazers_count=" + stargazers_count +
+                '}';
     }
 }

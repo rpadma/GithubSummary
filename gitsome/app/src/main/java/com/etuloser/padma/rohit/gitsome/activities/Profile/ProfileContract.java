@@ -1,4 +1,4 @@
-package com.etuloser.padma.rohit.gitsome.Activities.Profile;
+package com.etuloser.padma.rohit.gitsome.activities.Profile;
 
 import com.etuloser.padma.rohit.gitsome.model.UserData;
 
