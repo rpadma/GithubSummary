@@ -7,5 +7,5 @@ package com.etuloser.padma.rohit.gitsome.util;
 public final class Constants {
 
     public static String url = "https://api.github.com/";
-    public static String token = "068fd54b1b6162934f480830a094cf970820984a";
+    public static String token = "Added_Token";
 }
